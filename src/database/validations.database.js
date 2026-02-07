@@ -10,7 +10,7 @@ const verifyEmail = async(rol, email) => {
         throw new Error(error.message)
     }
 
-    return data
+    return data[0]
     
 }
 
@@ -24,7 +24,7 @@ const verifyPhone = async (rol, phone) => {
         throw new Error(error.message);
     }
 
-    return data;
+    return data[0];
 };
 
 const registrer = async(info) => {

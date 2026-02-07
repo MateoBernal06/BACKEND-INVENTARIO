@@ -2,7 +2,7 @@
 import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 
-const verifyUser = (req, res, next) => {
+export const verifyUser = (req, res, next) => {
     
     let token = req.headers.authorization
 
@@ -26,5 +26,4 @@ const verifyUser = (req, res, next) => {
             msg: `Token invalido`
         });
     }
-
 }
