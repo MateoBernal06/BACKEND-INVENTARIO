@@ -1,4 +1,5 @@
-import { verifyEmail, verifyPhone, registrer, login } from "../database/validations.database.js"
+import { verifyEmail, verifyPhone } from "../database/validations.database.js"
+import { login, registrer } from '../database/admin.database.js'
 import { encrypt, decrypt} from "../utils/hash.js"
 import { createToken } from "../config/jwt.js"
 

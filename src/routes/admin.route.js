@@ -6,6 +6,4 @@ const route = express()
 route.post('/register', registrerUser)
 route.post('/login', loginUser)
 
-// probar el token
-
 export default route
