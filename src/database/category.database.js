@@ -24,6 +24,18 @@ const verifyDescription = async (description) => {
     return data;
 };
 
+const verifyId = async (id) => {
+    const { data, error } = await supabase
+        .from("categories")
+        .select("code, name, description, status")
+        .eq("id", id);
+
+    if (error) {
+        throw new Error(error.message);
+    }
+    return data;
+};
+
 const verifyCode = async (code) => {
     const { data, error } = await supabase
         .from("categories")
@@ -35,6 +47,7 @@ const verifyCode = async (code) => {
     }
     return data;
 };
+
 
 const categoriesList = async() => {
     const { data, error } = await supabase
@@ -59,12 +72,13 @@ const addCategory = async(info) => {
     return data;
 }
 
-const updateCategory = async (code, info) => {
+const updateCategory = async (id, info) => {
 
     const { data, error } = await supabase
         .from("categories")
         .update(info)
-        .eq("code", code)
+        .eq("id", id)
+        .select("name, status, code, description");
 
     if(error){
         throw new Error(error.message);
@@ -72,12 +86,41 @@ const updateCategory = async (code, info) => {
     return data;
 }
 
-const deleteCategory = async(code) => {
+const deleteCategory = async(id) => {
     const { data, error } = await supabase
         .from("categories")
         .delete()
-        .eq("code", code);
+        .eq("id", id)
+        .select("name, status, code");
 
+    if (error) {
+        throw new Error(error.message);
+    }
+    return data;
+}
+
+const inactivateCategory = async (id) => {
+    const { data, error } = await supabase
+        .from("categories")
+        .update({ status: false })
+        .eq("id", id)
+        .select("name, status, code");
+    
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    return data;
+
+}
+
+const activivateCategory = async (id) => {
+    const { data, error } = await supabase
+        .from("categories")
+        .update({ status: true })
+        .eq("id", id)
+        .select("name, status, code");
+    
     if (error) {
         throw new Error(error.message);
     }
@@ -90,7 +133,10 @@ export {
     addCategory,
     updateCategory,
     deleteCategory,
-    verifyCode,
+    verifyId,
     verifyDescription,
     verifyName,
+    verifyCode,
+    inactivateCategory,
+    activivateCategory
 }

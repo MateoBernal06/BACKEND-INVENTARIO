@@ -1,4 +1,4 @@
-import {categoriesList, verifyName, verifyDescription, addCategory, verifyCode, updateCategory, deleteCategory} from '../database/category.database.js'
+import {categoriesList, verifyName, verifyDescription, addCategory, verifyId, updateCategory, deleteCategory, verifyCode, activivateCategory, inactivateCategory} from '../database/category.database.js'
 
 const viewCategories = async(req, res) => {
     try {
@@ -45,7 +45,7 @@ const createCategories = async(req, res) => {
         if(verificateName[0]){
             return res.status(400).json({
                 ok: false,
-                msg: "Categoria ya existente"
+                msg: "Categoria existente"
             })
         }
 
@@ -54,7 +54,7 @@ const createCategories = async(req, res) => {
         if(verificateDescription[0]){
             return res.status(400).json({
                 ok: false,
-                msg: "Descripcion ya existente"
+                msg: "Descripcion existente"
             });
         }
 
@@ -77,7 +77,7 @@ const createCategories = async(req, res) => {
         await addCategory({
             name: nameCategory,
             description: descriptionCategory,
-            code: codeCategory
+            code: codeCategory.toUpperCase()
         })
 
         return res.status(200).json({
@@ -95,14 +95,21 @@ const createCategories = async(req, res) => {
 
 const updateCategories = async(req, res) => {
     try {
-        const {code} = req.params
-        const {name, description} = req.body
+        const {id} = req.params
+        const {name, description, code} = req.body
 
         let nameCategory = name.trim()
         let descriptionCategory = description.trim()
+        let codeCategory = code.trim()
 
-        const verify = await verifyCode(code)
+        if(!nameCategory || !descriptionCategory || !codeCategory){
+            return res.status(400).json({
+                ok: false,
+                msg: "Todos los campos son obligatorios"
+            })
+        }
 
+        const verify = await verifyId(id)
         if(!verify[0]){
             return res.status(400).json({
                 ok: false,
@@ -114,7 +121,7 @@ const updateCategories = async(req, res) => {
         if(verificateName[0]){
             return res.status(400).json({
                 ok: false,
-                msg: "Nombre de categoria ya existente"
+                msg: "Nombre de categoria existente"
             })
         }
 
@@ -122,20 +129,29 @@ const updateCategories = async(req, res) => {
         if(verificateDescription[0]){
             return res.status(400).json({
                 ok: false,
-                msg: "Descripcion ya existente"
+                msg: "Descripcion existente"
             });
         }
 
-        if(!nameCategory || !descriptionCategory){
+        if(codeCategory.length!=3){
             return res.status(400).json({
                 ok: false,
-                msg: "Todos los campos son obligatorios"
+                msg: "El codigo de la categoria debe tener 3 digitos" 
             })
         }
 
-        await updateCategory(code, {
+        const verificateCode = await verifyCode(codeCategory)
+        if(verificateCode[0]){
+            return res.status(400).json({
+                ok: false,
+                msg: "Codigo existente"
+            });
+        }
+
+        await updateCategory(id, {
             name: nameCategory,
-            description: descriptionCategory
+            description: descriptionCategory,
+            code: codeCategory.toUpperCase()
         })
 
         return res.status(200).json({
@@ -153,9 +169,9 @@ const updateCategories = async(req, res) => {
 
 const deleteCategories = async(req, res) => {
     try {
-        const {code} = req.params
+        const {id} = req.params
         
-        const verify = await verifyCode(code)
+        const verify = await verifyId(id)
         if(!verify[0]){
             return res.status(400).json({
                 ok: false,
@@ -163,12 +179,49 @@ const deleteCategories = async(req, res) => {
             })
         }
         
-        await deleteCategory(code)
+        await deleteCategory(id)
 
         return res.status(200).json({
             ok: true,
-            msg: " Categoria eliminada exitosamente"
+            msg: " Categoria eliminada"
         })
+        
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: `Se produjo un error: ${error.message}`,
+        });
+    }
+}
+
+const inactivateCategories = async(req, res) => {
+    try {
+        const {id} = req.params
+        const verify = await verifyId(id)
+
+        if (!verify[0]) {
+            return res.status(400).json({
+                ok: false,
+                msg: "Categoria no existente"
+            });
+        }
+
+        if (verify[0].status === false) {
+            await activivateCategory(id)
+            return res.status(200).json({
+                ok: true,
+                msg: "Categoria activada"
+            });
+        }
+
+        if (verify[0].status === true) {
+            await inactivateCategory(id)
+            return res.status(200).json({
+                ok: true,
+                msg: "Categoria inactivada"
+            });
+        }
+
         
     } catch (error) {
         return res.status(500).json({
@@ -182,5 +235,6 @@ export {
     viewCategories,
     createCategories,
     updateCategories,
-    deleteCategories
+    deleteCategories,
+    inactivateCategories
 }
