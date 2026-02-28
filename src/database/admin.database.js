@@ -1,9 +1,9 @@
 import { supabase } from "../config/database.js";
 
-const loginAdmin = async (rol, email) => {
+const login = async (rol, email) => {
     const { data, error } = await supabase
         .from(rol)
-        .select("id, name, surname, address, email, phone")
+        .select("id, name, surname, address, email, phone, password")
         .eq("email", email);
 
     if (error) {
@@ -14,5 +14,5 @@ const loginAdmin = async (rol, email) => {
 };
 
 export {
-    loginAdmin
+    login
 }

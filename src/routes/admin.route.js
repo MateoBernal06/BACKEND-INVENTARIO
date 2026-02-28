@@ -1,8 +1,8 @@
 import express from 'express'
-import { login } from '../controllers/admin.controller.js'
+import { loginController } from '../controllers/admin.controller.js'
 
 const route = express()
 
-route.post('/login', login)
+route.post('/login', loginController)
 
 export default route

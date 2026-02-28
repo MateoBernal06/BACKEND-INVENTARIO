@@ -1,8 +1,8 @@
-import { loginAdmin } from '../database/admin.database.js'
-import { decrypt} from "../utils/hash.js"
+import { login } from '../database/admin.database.js'
+import { decrypt } from "../utils/hash.js"
 import { createToken } from "../config/jwt.js"
 
-const login = async(req, res) => {
+const loginController = async(req, res) => {
     try {
         const {email, password} = req.body
 
@@ -13,7 +13,7 @@ const login = async(req, res) => {
             })
         }
 
-        const verifyEmail = await loginAdmin("admin", email.trim());
+        const verifyEmail = await login("admin", email.trim());
         const verify = await decrypt(password, verifyEmail.password)
         
         if(!verify){
@@ -34,11 +34,11 @@ const login = async(req, res) => {
     } catch (error) {
         return res.status(500).json({
             ok: false,
-            msg: `Se produjo un error: ${error.message}`,
+            msg: `Se produjo un error: ${error.message}`
         });
     }
 }
 
 export {
-    login
+    loginController
 }

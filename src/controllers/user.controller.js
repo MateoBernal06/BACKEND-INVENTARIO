@@ -1,4 +1,4 @@
-import {createUser} from '../database/user.database.js';
+import {createUser, getUsers, deleteUser, getUser, activateUser, desactivateUser} from '../database/user.database.js';
 import { verifyEmail, verifyPhone } from '../database/validations.database.js';
 import { encrypt } from '../utils/hash.js';
 
@@ -26,7 +26,15 @@ const createUserController = async (req, res) => {
         if(emailVerificate){
             return res.status(400).json({
                 ok: false,
-                msg: "Correo electrónico ya registrado"
+                msg: "Correo electrónico registrado"
+            })
+        }
+        
+        const phoneVerificate = await verifyPhone("employee", phoneUser);
+        if(phoneVerificate){
+            return res.status(400).json({
+                ok: false,
+                msg: "Número de teléfono ya registrado"
             })
         }
 
@@ -37,13 +45,6 @@ const createUserController = async (req, res) => {
             })
         }
 
-        const phoneVerificate = await verifyPhone("employee", phoneUser);
-        if(phoneVerificate){
-            return res.status(400).json({
-                ok: false,
-                msg: "Número de teléfono ya registrado"
-            })
-        }
         
         if(passwordUser.length < 12 || passwordUser.length > 16){
             return res.status(400).json({
@@ -75,5 +76,120 @@ const createUserController = async (req, res) => {
     }
 }
 
+const getUsersController = async (req, res) => {
+    try {
 
-export { createUserController }
+        const users = await getUsers()
+        
+        if(users.length === 0){
+            return res.status(201).json({
+                ok: true,
+                msg: "No se encontraron usuarios"
+            })
+        }
+
+        return res.status(200).json({
+            ok: true,
+            users: users
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: `Se produjo un error: ${error.message}`,
+        });
+    }
+}
+
+const deleteUserController = async (req, res) => {
+    try {
+        const {id} = req.params
+
+        const user = await getUser(id)
+
+        if(!user[0]){
+            return res.status(404).json({
+                ok: false,
+                msg: "Usuario no encontrado"
+            })
+        }
+
+        await deleteUser(id)
+
+        return res.status(200).json({
+            ok: true,
+            msg: "Usuario eliminado exitosamente",
+        });
+        
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: `Se produjo un error: ${error.message}`,
+        });
+    }
+}
+
+const getUserController = async (req, res) => {
+    try {
+        const {id} = req.params
+        const user = await getUser(id);
+
+        if (!user[0]) {
+            return res.status(404).json({
+                ok: false,
+                msg: "Usuario no encontrado",
+            });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            user: user[0]
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: `Se produjo un error: ${error.message}`,
+        });
+    }
+}
+
+
+const statusUserController = async (req, res) => {
+    try {
+
+        const {id} = req.params
+        const user = await getUser(id);
+
+        if (!user[0]) {
+            return res.status(404).json({
+                ok: false,
+                msg: "Usuario no encontrado",
+            });
+        }
+
+        if(user[0].status){
+            await desactivateUser(id)
+            return res.status(201).json({
+                ok: true,
+                msg: "Usuario desactivado",
+            });
+        }
+
+        if (!user[0].status) {
+            await activateUser(id);
+            return res.status(201).json({
+                ok: true,
+                msg: "Usuario reactivado",
+            });
+        }
+        
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: `Se produjo un error: ${error.message}`,
+        });
+    }
+}
+
+export { createUserController, getUsersController, deleteUserController, getUserController, statusUserController }
