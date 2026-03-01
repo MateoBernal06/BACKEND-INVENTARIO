@@ -1,4 +1,4 @@
-import {categoriesList, verifyName, verifyDescription, addCategory, verifyId, updateCategory, deleteCategory, verifyCode, activivateCategory, inactivateCategory} from '../database/category.database.js'
+import {categoriesList, verifyName, verifyDescription, addCategory, verifyId, updateCategory, deleteCategory, verifyCode, activivateCategory, inactivateCategory, getCategory} from '../database/category.database.js'
 
 const viewCategories = async(req, res) => {
     try {
@@ -89,6 +89,31 @@ const createCategories = async(req, res) => {
         return res.status(500).json({
             ok: false,
             msg: `Se produjo un error: ${error.message}`
+        });
+    }
+}
+
+const getCategories = async(req, res) => {
+    try {
+        const { id } = req.params;
+        const category = await getCategory(id);
+
+        if (!category[0]) {
+            return res.status(404).json({
+                ok: false,
+                msg: "Categoria no encontrada",
+            });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            data: category[0],
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: `Se produjo un error: ${error.message}`,
         });
     }
 }
@@ -236,5 +261,6 @@ export {
     createCategories,
     updateCategories,
     deleteCategories,
-    inactivateCategories
+    inactivateCategories,
+    getCategories
 }

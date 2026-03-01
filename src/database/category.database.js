@@ -99,6 +99,20 @@ const deleteCategory = async(id) => {
     return data;
 }
 
+const getCategory = async (id) => {
+    const { data, error } = await supabase
+        .from("categories")
+        .select("id, name, description, status, code")
+        .eq("id", id);
+
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    return data;
+};
+
+
 const inactivateCategory = async (id) => {
     const { data, error } = await supabase
         .from("categories")
@@ -138,5 +152,6 @@ export {
     verifyName,
     verifyCode,
     inactivateCategory,
-    activivateCategory
+    activivateCategory,
+    getCategory
 }
