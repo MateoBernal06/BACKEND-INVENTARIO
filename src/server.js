@@ -5,6 +5,7 @@ import 'dotenv/config'
 import admin from './routes/admin.route.js'
 import category from './routes/category.route.js'
 import user from './routes/user.route.js'
+import product from './routes/product.route.js'
 
 const app = express()
 const PORT = process.env.PORT || 4000
@@ -19,6 +20,7 @@ app.get('/', (req, res)=>{
 app.use('/api/v1', admin)
 app.use('/api/v1', category)
 app.use('/api/v1', user)
+app.use('/api/v1', product)
 
 app.use((req, res, next)=>{
     res.status(404).json({
