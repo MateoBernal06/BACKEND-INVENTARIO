@@ -30,8 +30,8 @@ Los tokens tienen una duración de 1 hora.
 - **Body (JSON):**
   ```json
   {
-    "email": "admin@example.com",
-    "password": "tu_password"
+    "email": "admin@gmail.com",
+    "password": "HolaMundo6"
   }
   ```
 
