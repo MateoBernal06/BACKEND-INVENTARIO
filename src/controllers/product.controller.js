@@ -1,4 +1,4 @@
-import {createProduct, verifyProduct, productsList, getProduct, deleteProduct} from '../database/product.database.js'
+import {createProduct, verifyProduct, productsList, getProduct, deleteProduct, activivateProduct, inactivateProduct} from '../database/product.database.js'
 import {getCategory} from '../database/category.database.js'
 
 const createProductController = async(req, res) => {
@@ -180,9 +180,46 @@ const deleteProductController = async (req, res) => {
     }
 }
 
+const statusProductController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const verify = await verifyProduct("id", id);
+
+        if (!verify[0]) {
+            return res.status(400).json({
+                ok: false,
+                msg: "Producto no existente",
+            });
+        }
+
+        if (verify[0].status === false) {
+            await activivateProduct(id);
+            return res.status(200).json({
+                ok: true,
+                msg: "Producto activado",
+            });
+        }
+
+        if (verify[0].status === true) {
+            await inactivateProduct(id);
+            return res.status(200).json({
+                ok: true,
+                msg: "Producto inactivado",
+            });
+        }
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: `Se produjo un error: ${error.message}`,
+        });
+    }
+};
+
+
 export {
     createProductController,
     productsListController,
     getProductController,
-    deleteProductController
+    deleteProductController,
+    statusProductController
 }

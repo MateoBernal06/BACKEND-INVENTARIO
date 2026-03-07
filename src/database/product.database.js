@@ -4,7 +4,7 @@ import {supabase} from '../config/database.js'
 const verifyProduct = async (word, value) => {
     const { data, error } = await supabase
         .from("products")
-        .select("name, description, price, stock")
+        .select("name, description, price, stock, status, categories_id")
         .eq(word, value);
 
     if (error) {
@@ -65,10 +65,41 @@ const deleteProduct = async (id) => {
 }
 
 
+const inactivateProduct = async (id) => {
+    const { data, error } = await supabase
+        .from("products")
+        .update({ status: false })
+        .eq("id", id)
+        .select("id, name, status, categories_id");
+
+    console.log(error)
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    return data;
+};
+
+const activivateProduct = async (id) => {
+    const { data, error } = await supabase
+        .from("products")
+        .update({ status: true })
+        .eq("id", id)
+        .select("id, name, status, categories_id");
+
+    if (error) {
+        throw new Error(error.message);
+    }
+    return data;
+};
+
+
 export {
     createProduct,
     verifyProduct,
     productsList,
     getProduct,
-    deleteProduct
+    deleteProduct,
+    inactivateProduct,
+    activivateProduct
 }
