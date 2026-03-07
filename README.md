@@ -31,7 +31,7 @@ Los tokens tienen una duración de 1 hora.
   ```json
   {
     "email": "admin@gmail.com",
-    "password": "HolaMundo6"
+    "password": "Amimegustaelhiphop1"
   }
   ```
 
