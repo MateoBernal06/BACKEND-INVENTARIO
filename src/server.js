@@ -30,6 +30,12 @@ app.use((req, res, next)=>{
     next()
 })
 
-app.listen(PORT, ()=>{
-    console.log(`Server on port ${PORT}`.bgGreen)
-})
+// Para Vercel, exportar la app en lugar de hacer listen
+export default app
+
+// Solo para desarrollo local
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, ()=>{
+        console.log(`Server on port ${PORT}`.bgGreen)
+    })
+}

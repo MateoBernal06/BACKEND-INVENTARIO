@@ -5,9 +5,8 @@
 Esta API REST permite gestionar un sistema de inventario que incluye productos, categorías, usuarios y administradores. Está construida con Node.js, Express y utiliza Supabase como base de datos, junto con Cloudinary para el manejo de imágenes.
 
 ### Base URL
-```
-http://localhost:3000/api/v1/
-```
+- **Desarrollo:** `http://localhost:3000/api/v1/`
+- **Producción:** `https://tu-proyecto.vercel.app/api/v1/` (reemplaza con tu URL de Vercel)
 
 ### Autenticación
 La mayoría de los endpoints requieren autenticación mediante JWT (JSON Web Tokens). Para autenticarte:
@@ -190,3 +189,36 @@ Las respuestas de error siguen el formato:
 - Las imágenes de productos se suben a Cloudinary y se devuelve la URL.
 - Los usuarios y productos tienen un campo `status` que puede ser activado/desactivado.
 - Para crear productos, se debe especificar el ID de la categoría en la URL.
+
+## Despliegue en Vercel
+
+Este proyecto está configurado para desplegarse en Vercel. Sigue estos pasos:
+
+1. **Instala Vercel CLI** (opcional, pero recomendado):
+   ```
+   npm install -g vercel
+   ```
+
+2. **Despliega el proyecto**:
+   - Conecta tu repositorio de GitHub a Vercel, o usa el CLI:
+     ```
+     vercel
+     ```
+   - Vercel detectará automáticamente la configuración en `vercel.json`.
+
+3. **Configura variables de entorno en Vercel**:
+   - Ve a tu proyecto en Vercel Dashboard.
+   - En "Settings" > "Environment Variables", agrega:
+     - `PORT`: (opcional, Vercel asigna automáticamente)
+     - `URL_SUPABASE`: Tu URL de Supabase
+     - `KEY_SUPABASE`: Tu clave de Supabase
+     - `JWT_SECRET`: Tu secreto JWT
+     - `CLOUDINARY_CLOUD_NAME`: Nombre de tu cloud de Cloudinary
+     - `CLOUDINARY_API_KEY`: API Key de Cloudinary
+     - `CLOUDINARY_API_SECRET`: API Secret de Cloudinary
+
+4. **URL de producción**:
+   - Después del despliegue, Vercel te dará una URL como `https://tu-proyecto.vercel.app`.
+   - Actualiza la Base URL en este manual a tu URL de producción.
+
+Nota: El proyecto usa ES modules, que Vercel soporta nativamente.
