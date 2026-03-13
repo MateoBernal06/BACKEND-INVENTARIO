@@ -1,5 +1,6 @@
 import express from 'express'
 import morgan from 'morgan'
+import cors from "cors";
 import 'colors'
 import 'dotenv/config'
 import admin from './routes/admin.route.js'
@@ -10,6 +11,12 @@ import product from './routes/product.route.js'
 const app = express()
 const PORT = process.env.PORT || 4000
 
+app.use(
+  cors({
+    origin: ["http://localhost:5173", 
+            "https://tu-frontend.vercel.app"],
+  }),
+);
 app.use(express.json())
 app.use(morgan('dev'))
 
