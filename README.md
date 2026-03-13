@@ -6,7 +6,7 @@ Esta API REST permite gestionar un sistema de inventario que incluye productos, 
 
 ### Base URL
 - **Desarrollo:** `http://localhost:3000/api/v1/`
-- **Producción:** `https://tu-proyecto.vercel.app/api/v1/` (reemplaza con tu URL de Vercel)
+- **Producción:** `https://tu-proyecto.vercel.app/api/v1/](https://backend-inventario-six.vercel.app/`
 
 ### Autenticación
 La mayoría de los endpoints requieren autenticación mediante JWT (JSON Web Tokens). Para autenticarte:
