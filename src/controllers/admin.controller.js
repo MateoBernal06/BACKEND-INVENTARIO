@@ -14,8 +14,27 @@ const loginController = async(req, res) => {
         }
 
         const verifyEmail = await login("admin", email.trim());
-        const verify = await decrypt(password, verifyEmail.password)
-        
+        const verifyEmailUser = await login("employee", email.trim());
+
+        if(!verifyEmail && !verifyEmailUser){
+            return res.status(400).json({
+                ok: false,
+                msg: 'Usuario no registrado'
+            })
+        }
+
+        let verify = false;
+        let userData = null;
+
+        if(verifyEmail){
+            verify = await decrypt(password, verifyEmail.password);
+            userData = verifyEmail;
+            
+        } else if(verifyEmailUser){
+            verify = await decrypt(password, verifyEmailUser.password);
+            userData = verifyEmailUser;
+        }
+
         if(!verify){
             return res.status(400).json({
                 ok: false,
@@ -23,12 +42,12 @@ const loginController = async(req, res) => {
             })
         }
         
-        const token = createToken(verifyEmail.id)
+        const token = createToken(userData.id)
 
         return res.status(201).json({
             ok: true,
             token: token,
-            data: verifyEmail
+            data: userData
         })
         
     } catch (error) {

@@ -14,8 +14,8 @@ const PORT = process.env.PORT || 4000
 app.use(
   cors({
     origin: ["http://localhost:5173", 
-            "https://tu-frontend.vercel.app"],
-  }),
+            ""],
+  })
 );
 app.use(express.json())
 app.use(morgan('dev'))
@@ -37,7 +37,6 @@ app.use((req, res, next)=>{
     next()
 })
 
-// Para Vercel, exportar la app en lugar de hacer listen
 export default app
 
 // Solo para desarrollo local
