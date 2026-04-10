@@ -1,5 +1,5 @@
 import express from 'express'
-import { loginController } from '../controllers/admin.controller.js'
+import { loginController } from '../controllers/system.controller.js'
 
 const route = express()
 
